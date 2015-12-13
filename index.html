@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width, height=device-height, target-densitydpi=device-dpi"/> 
+
+<title>DrawPix by PixelJo</title>
+
+<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.2.0.min.css" />
+<link rel="stylesheet" type="text/css" href="css/jquery.mobile.theme-1.2.0.min.css" />	
+<link href="css/draw.css" rel="stylesheet" type="text/css" />
+	
+    
+    <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+    
+   <script type="text/javascript" src="js/draw.js"></script>
+    
+    <script type="text/javascript" src="js/jquery.mobile-1.2.0.min.js"></script>
+
+    
+
+
+</head>
+
+<body>
+	<div id="main-page" data-role="page" style="overflow:hidden;">
+  
+    <div data-role="content">
+    
+      <div class="canvas-div"><canvas id="temp-canvas" class="draw-canvas"></canvas></div>
+
+      <div class="canvas-div"><canvas id="current-canvas" class="draw-canvas"></canvas></div>    
+      <div class="canvas-div"><canvas id="feedback-canvas" class="draw-canvas"></canvas></div>
+   
+      <a id="show-button" class="show-hide" href="#"><span>&raquo;</span></a>
+    
+      <div id = "control-panel">
+        <a href="#new-dialog" data-rel="popup"><img id="new-button" class="control-button" src="images/new-button.jpg" alt="new button" width="44" height="44" /></a> 
+        <a href="#"><img id="save-button" class="control-button" src="images/save-button.jpg" alt="save button" width="44" height="44" /></a>
+        <a id="hide-button" class="show-hide" href="#"><span>&laquo;</span></a>
+        <hr />
+      
+        <a href="#"><img id="draw-button" class= "control-button" src="images/draw-button.png" alt="draw-button" width="44" height="44"/></a>
+        <a href="#"><img id="erase-button" class= "control-button" src="images/erase-button.jpg" alt="erase-button" width="44" height="44"/></a> 
+        <div id="fill-container" class= "control-button" >
+          <div id="fill-button-background" class="button-background"></div>
+          <div id="fill-background"></div> 
+          <div id="fill-button">
+            <a href="#"><img id="fill-img"  src="images/fill-button.png" alt="fill-button" width="44" height="44"/></a>
+          </div>
+        </div>  
+
+        <p class = "slider-label">Brush Size</p>
+        <label for="width-slider" ></label>
+  			<input type="range" name="slider-1" id="width-slider" value="5" min="1" max="51" data-highlight="true"/>
+        <p class = "slider-label">Opacity</p>
+        <label for="opacity-slider" ></label>
+  			<input type="range" name="slider-2" id="opacity-slider" value="100" min="5" max="100" step="5" data-highlight="true"/>
+
+        <div class = "color-section">
+          <div class="color-button" id="black-button"></div>
+          <div class="color-button" id="white-button"></div>
+          <div class="color-button" id="grey-button"></div>
+          <div class="color-button" id="brown-button"></div>
+          <div class="color-button" id="red-button"></div>
+          <div class="color-button" id="red-orange-button"></div>
+          <div class="color-button" id="yellow-orange-button"></div>
+          <div class="color-button" id="yellow-button"></div>
+          <div class="color-button" id="yellow-green-button"></div>
+          <div class="color-button" id="green-button"></div>
+          <div class="color-button" id="dark-green-button"></div>
+          <div class="color-button" id="light-blue-button"></div>
+          <div class="color-button" id="blue-button"></div>
+          <div class="color-button" id="blue-purple-button"></div>
+          <div class="color-button" id="purple-button"></div>
+          <div class="color-button" id="pink-button"></div>
+        </div><!-- end color section -->
+        <hr />
+
+        <div id="fill-canvas-container" class= "control-button" >
+          <div id="fill-canvas-button-background" class="button-background"></div>
+          <div id="fill-canvas-background"></div> 
+          <div id="fill-canvas-button">
+            <a href="#"><img id="fill-canvas-img"  src="images/fill-canvas-landscape-button.png" alt="fill-canvas-button" width="44" height="44"/></a>
+          </div>
+        </div>  
+
+        <a href="#"><img id="undo-button" class="control-button" src="images/undo-button.jpg" alt="undo button" width="44" height="44"/></a>
+        <a href="#"><img id="redo-button" class="control-button" src="images/redo-button.jpg" alt="redo button" width="44" height="44"/></a>
+        <hr />
+        <a href="#"><img id="mail-button" class= "control-button" src="images/mail-button.jpg" alt="mail-button" width="44" height="44"/></a> 
+
+      </div>  <!-- end control-panel -->
+    </div>   <!--end page content-->
+
+    <!-- dialog divs -->
+
+    <div data-role="popup" data-theme="d" id="new-dialog">
+       <div data-role = "header">
+          <h1>New Canvas</h1>
+       </div>
+       <div data-role="content">
+          <p>Are you sure you want to start a new canvas?<br />
+          All unsaved changes will be lost.</p>
+      
+             <a href="#" data-role="button" data-inline="true" data-theme="a" id="new-dialog-yes">Yes</a>
+             <a href="#" data-role="button" data-inline="true" data-theme="a" id="new-dialog-no">No</a>
+             
+       </div><!-- end content -->
+    </div><!-- end new-dialog-->
+
+    <div data-role="popup" data-theme="d" id="save-dialog">
+      <div data-role = "header">
+        <h1>File Saved</h1>
+      </div>
+      <div data-role="content">
+        <p>Your file has been saved to <br />
+          the DrawPix photo album</p>
+         
+        <a href="#" data-role="button" data-inline="true" data-theme="a" id="save-dialog-ok">OK</a>
+             
+      </div><!-- end content -->
+    </div><!-- end save-dialog-->
+   
+  </div><!-- end main page -->
+
+</body>
+</html>

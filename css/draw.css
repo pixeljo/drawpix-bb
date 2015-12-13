@@ -1,0 +1,236 @@
+﻿html, body{
+ 
+  overflow: hidden;
+}
+html, div, body {
+	padding: 0; 
+	margin: 0; 
+}
+body { 
+	background-color: white; 
+	color: black; 
+}
+
+#temp-canvas{
+	display:none;
+}
+
+a, a:link {
+	text-decoration:none;
+	color:#fff;
+}
+
+a.show-hide{
+	width:44px;
+	height:44px;
+	border:3px solid #fff;
+	border-radius:25px;
+	color:#fff;
+	background-color:#000;
+	text-decoration:none;
+	text-align:center;
+	font:33px/1.2em Georgia; 
+	outline:none;
+}
+	
+#hide-button{
+	display:inline-block;
+	position: absolute;
+	margin-top: 2px;
+	margin-bottom: -2px;
+	margin-left: 8px;
+	color:#fff;
+	z-index: 300;
+}
+
+#show-button{
+	position:absolute;
+	top:16px;
+	left:10px;
+	z-index: 10; 
+	color:#FFF;	
+}
+
+
+#show-button.ui-link:link{
+	color:#FFF;
+}
+
+
+#control-panel{
+	position:absolute;
+	top: 0px;
+	left: 0px;
+	z-index:100;
+	background-color: rgba(220,220,220, .70);
+	border:solid 1px #999;
+	padding: 5px;
+	width: 180px; /*3*(drawButton.clientWidth + 6) + 30*/
+}
+
+#fill-container{
+	display:inline-block;
+	position: relative;
+	height: 44px;
+	width: 44px;
+}
+
+.button-background{
+	background-color: #FFF;
+}
+
+#fill-button-background, #fill-background, #fill-button{
+	position: absolute;
+	top: 0;
+	left:0;
+	width: 44px;
+	height: 44px;
+}
+
+#fill-canvas-container{
+	display:inline-block;
+	position: relative;
+	height: 44px;
+	width: 44px;
+}
+#fill-canvas-button-background, #fill-canvas-background, #fill-canvas-button{
+	position: absolute;
+	top: 0;
+	left:0;
+	width: 44px;
+	height: 44px;
+}
+
+#fill-background, #fill-canvas-background, #draw-button{
+	background-color: rgba(0,0,255,255);
+}
+
+
+	
+.control-button, .color-button{
+	margin-left:5px;
+	margin-top:2px;
+	margin-bottom: -2px;
+	border: solid 3px #FFF;
+	/*z-index:200;*/
+	
+}
+/*.control-button{
+	width:44px;
+	height:44px;
+}
+*/
+#new-button, #save-button, #draw-button, #erase-button, #fill-container, #undo-button, #redo-button, #mail-button{
+	border: solid 3px #FFF;
+}
+
+
+
+.canvas-div{
+	position: absolute;
+	top: 0px;	
+	left:0px;
+	
+}
+.draw-canvas{	
+	position: absolute;
+	top: 0px;	
+	left:0px;
+	
+}
+
+.slider-label {
+	margin-bottom: -5px;	
+}
+
+#opacity-slider{
+	margin-bottom:20px;
+}
+
+.ui-slider {
+      width : 80% !important;
+	  margin-bottom: 5px !important;
+    }
+
+    input.ui-slider-input {
+      display : none !important;
+  }
+  
+  .nav{
+	  list-style:none;
+  }
+  
+.color-section{
+	margin-top:10px;
+}
+
+.color-button{
+	display:inline-block;
+	width:30px;
+	height:30px;
+}
+
+#black-button{
+	background-color: #000;
+}
+
+#white-button{
+	background-color: #FFF;
+}
+
+#grey-button{
+	background-color: #999999;
+}
+
+#brown-button{
+	background-color: #993300;
+}
+
+#red-button{
+	background-color: #ED1C24;
+}
+
+#red-orange-button{
+	background-color:#FF9900;
+}
+
+#yellow-orange-button{
+	background-color:#FFCC00;
+}
+
+#yellow-button{
+	background-color: #FF0; 
+}
+
+#yellow-green-button{
+	background-color: #CCFF00;
+	
+}
+#green-button{
+	background-color: #0F0; 
+}
+
+#dark-green-button{
+	background-color: #33CC66;
+}
+
+#light-blue-button{
+	background-color: #00FFFF;
+}
+
+#blue-button{
+	background-color: #00F; 
+}
+
+#blue-purple-button{
+	background-color: #9900FF;
+}
+
+
+#purple-button{
+	background-color: #F0F;
+}
+ 
+#pink-button{
+	background-color: #FFCCFF;
+}
