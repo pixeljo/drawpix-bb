@@ -102,19 +102,18 @@ CanvasList.prototype = {
 		
 	
 
-function drawPen(drawCtx, x, y) {
+function drawPen(drawCtx, x, y) {	
+	//Keep track of each point traversed while mouse/touch is moving.
+ 	xList.push(x);
+    yList.push(y);
 	
-		//Keep track of each point traversed while mouse/touch is moving.
-	 	xList.push(x);
-        yList.push(y);
-		
-		if(currentState === 'draw'){
-			clearCanvas(feedbackCtx);
-			drawStroke(feedbackCtx, xList, yList);
-		}
-		
-		else{ //current state is erase
-		
+	if(currentState === 'draw'){
+		clearCanvas(feedbackCtx);
+		drawStroke(feedbackCtx, xList, yList);
+	}
+	
+	else{ //current state is erase
+	
 		//Clear the current canvas context and re-draw previous canvas with
 		//current stroke path up to this point.
 		clearCanvas(drawCtx);
@@ -128,8 +127,7 @@ function drawPen(drawCtx, x, y) {
 		drawCtx.globalCompositeOperation = currentCompositeOperation;
 		drawCtx.globalAlpha = opacity;
 		drawStroke(drawCtx, xList, yList);
-		} //end else current state is erase
-
+	} //end else current state is erase
 }
 
 function drawStroke(ctx, xPosList, yPosList){
@@ -158,142 +156,137 @@ function drawStroke(ctx, xPosList, yPosList){
 //Functions used for bucket fill
 function matchStartColor(pixelPos, startR, startG, startB, startA) {
 
-			var pixels = colorLayerData.data;
+	var pixels = colorLayerData.data;
 
-			// If the current pixel matches the clicked color
-			//return (r === startR && g === startG && b === startB && a === startA);
-			return (pixels[pixelPos] === startR 
-					&& pixels[pixelPos+1] === startG 
-					&& pixels[pixelPos+2] === startB 
-					&& pixels[pixelPos+3] === startA); 
+	// If the current pixel matches the clicked color
+	//return (r === startR && g === startG && b === startB && a === startA);
+	return (pixels[pixelPos] === startR 
+			&& pixels[pixelPos+1] === startG 
+			&& pixels[pixelPos+2] === startB 
+			&& pixels[pixelPos+3] === startA); 
 }
 function colorPixel(pixelPos, r, g, b, a) {
 			
-			var pixels = colorLayerData.data;
-			
-			var rOld = pixels[pixelPos];
-			var gOld = pixels[pixelPos + 1];
-			var bOld = pixels[pixelPos + 2];
-			var aOld = pixels[pixelPos + 3] !== undefined ? pixels[pixelPos + 3] : 0;
-			
-			
-			//Need to "blend" (using normal-mode and source-over composition) the old and new pixels.
-			var alpha = a/255;
-			var oldAlpha = aOld/255;
-			var newAlpha = alpha + oldAlpha*(1-alpha);
-			var rNew = alpha*r + oldAlpha*rOld*(1-alpha);
-			var gNew = alpha*g + oldAlpha*gOld*(1-alpha);
-			var bNew = alpha*b + oldAlpha*bOld*(1-alpha);
-			
-			pixels[pixelPos] = Math.round(rNew/newAlpha);
-			pixels[pixelPos + 1] = Math.round(gNew/newAlpha);
-			pixels[pixelPos + 2] = Math.round(bNew/newAlpha);
-			pixels[pixelPos + 3] = Math.round(newAlpha*255);
-			
-			
+	var pixels = colorLayerData.data;
+	
+	var rOld = pixels[pixelPos];
+	var gOld = pixels[pixelPos + 1];
+	var bOld = pixels[pixelPos + 2];
+	var aOld = pixels[pixelPos + 3] !== undefined ? pixels[pixelPos + 3] : 0;
+	
+	
+	//Need to "blend" (using normal-mode and source-over composition) the old and new pixels.
+	var alpha = a/255;
+	var oldAlpha = aOld/255;
+	var newAlpha = alpha + oldAlpha*(1-alpha);
+	var rNew = alpha*r + oldAlpha*rOld*(1-alpha);
+	var gNew = alpha*g + oldAlpha*gOld*(1-alpha);
+	var bNew = alpha*b + oldAlpha*bOld*(1-alpha);
+	
+	pixels[pixelPos] = Math.round(rNew/newAlpha);
+	pixels[pixelPos + 1] = Math.round(gNew/newAlpha);
+	pixels[pixelPos + 2] = Math.round(bNew/newAlpha);
+	pixels[pixelPos + 3] = Math.round(newAlpha*255);			
 }
 function floodFill(startX, startY, startR, startG, startB, startA) {
 			
-			var newPos,
-				x,
-				y,
-				pixelPos,
-				reachLeft,
-				reachRight,
-				drawingBoundLeft = 0,
-				drawingBoundTop = 0,
-				drawingBoundRight = canvasWidth - 1,
-				drawingBoundBottom = canvasHeight - 1,
-				pixelStack = [[startX, startY]];
-				
+	var newPos,
+		x,
+		y,
+		pixelPos,
+		reachLeft,
+		reachRight,
+		drawingBoundLeft = 0,
+		drawingBoundTop = 0,
+		drawingBoundRight = canvasWidth - 1,
+		drawingBoundBottom = canvasHeight - 1,
+		pixelStack = [[startX, startY]];
+		
 
-			while (pixelStack.length) {
+	while (pixelStack.length) {
 
-				newPos = pixelStack.pop();
-				x = newPos[0];
-				y = newPos[1];
+		newPos = pixelStack.pop();
+		x = newPos[0];
+		y = newPos[1];
 
-				// Get current pixel position
-				pixelPos = (y * canvasWidth + x) * 4;
+		// Get current pixel position
+		pixelPos = (y * canvasWidth + x) * 4;
 
-				// Go up as long as the color matches and are inside the canvas
-				while (y >= drawingBoundTop && matchStartColor(pixelPos, startR, startG, startB, startA)) {
-					y -= 1;
-					pixelPos -= canvasWidth * 4;
-				}
+		// Go up as long as the color matches and are inside the canvas
+		while (y >= drawingBoundTop && matchStartColor(pixelPos, startR, startG, startB, startA)) {
+			y -= 1;
+			pixelPos -= canvasWidth * 4;
+		}
 
-				pixelPos += canvasWidth * 4;
-				y += 1;
-				reachLeft = false;
-				reachRight = false;
+		pixelPos += canvasWidth * 4;
+		y += 1;
+		reachLeft = false;
+		reachRight = false;
 
-				// Go down as long as the color matches and in inside the canvas
-				while (y <= drawingBoundBottom && matchStartColor(pixelPos, startR, startG, startB, startA)) {
-					y += 1;
+		// Go down as long as the color matches and in inside the canvas
+		while (y <= drawingBoundBottom && matchStartColor(pixelPos, startR, startG, startB, startA)) {
+			y += 1;
 
-					colorPixel(pixelPos, curColor.r, curColor.g, curColor.b, curColor.a);
-					
+			colorPixel(pixelPos, curColor.r, curColor.g, curColor.b, curColor.a);
+			
 
-					if (x > drawingBoundLeft) {
-						if (matchStartColor(pixelPos - 4, startR, startG, startB, startA)) {
-							if (!reachLeft) {
-								// Add pixel to stack
-								pixelStack.push([x - 1, y]);
-								reachLeft = true;
-							}
-						} else if (reachLeft) {
-							reachLeft = false;
-						}
+			if (x > drawingBoundLeft) {
+				if (matchStartColor(pixelPos - 4, startR, startG, startB, startA)) {
+					if (!reachLeft) {
+						// Add pixel to stack
+						pixelStack.push([x - 1, y]);
+						reachLeft = true;
 					}
-
-					if (x < drawingBoundRight) {
-						if (matchStartColor(pixelPos + 4, startR, startG, startB, startA)) {
-							if (!reachRight) {
-								// Add pixel to stack
-								pixelStack.push([x + 1, y]);
-								reachRight = true;
-							}
-						} else if (reachRight) {
-							reachRight = false;
-						}
-					}
-
-					pixelPos += canvasWidth * 4;
+				} else if (reachLeft) {
+					reachLeft = false;
 				}
 			}
-			
-			
+
+			if (x < drawingBoundRight) {
+				if (matchStartColor(pixelPos + 4, startR, startG, startB, startA)) {
+					if (!reachRight) {
+						// Add pixel to stack
+						pixelStack.push([x + 1, y]);
+						reachRight = true;
+					}
+				} else if (reachRight) {
+					reachRight = false;
+				}
+			}
+
+			pixelPos += canvasWidth * 4;
+		}
+	}			
 }
 // Start painting with paint bucket tool starting from pixel specified by startX and startY
 function paintAt(startX, startY) {
 	
-			var pixels = colorLayerData.data;
+	var pixels = colorLayerData.data;
 
-			var pixelPos = (startY * canvasWidth + startX) * 4,
-				r = pixels[pixelPos],
-				g = pixels[pixelPos + 1],
-				b = pixels[pixelPos + 2],
-				a = pixels[pixelPos + 3] !== undefined ? pixels[pixelPos + 3] : 0;
+	var pixelPos = (startY * canvasWidth + startX) * 4,
+		r = pixels[pixelPos],
+		g = pixels[pixelPos + 1],
+		b = pixels[pixelPos + 2],
+		a = pixels[pixelPos + 3] !== undefined ? pixels[pixelPos + 3] : 0;
 
-			
-			if (r === curColor.r && g === curColor.g && b === curColor.b && a === 255) {
-					// Return because trying to fill with the same color that is completely saturated.
-					return;
-			}
-			 //$.mobile.loading('show'); //show activity indicator
-			$.mobile.loading( 'show', {
-				text: 'Painting',
-				textVisible: true,
-				theme: 'd'
-			});
+	
+	if (r === curColor.r && g === curColor.g && b === curColor.b && a === 255) {
+			// Return because trying to fill with the same color that is completely saturated.
+			return;
+	}
+    //show activity indicator
+	$.mobile.loading( 'show', {
+		text: 'Painting',
+		textVisible: true,
+		theme: 'd'
+	});
 
-			floodFill(startX, startY, r, g, b, a);
-			 $.mobile.loading('hide'); //hide activity indicator
+	floodFill(startX, startY, r, g, b, a);
+	 $.mobile.loading('hide'); //hide activity indicator
 
-			//redraw();
-			currentCtx.putImageData(colorLayerData, 0, 0);
-			
-			//drawStroke(currentCtx);
+	//redraw();
+	currentCtx.putImageData(colorLayerData, 0, 0);
+	
 }
 
 
@@ -378,12 +371,12 @@ function drawFinal(drawCtx)
 		drawStroke(drawCtx, xList, yList);
 	}
 	else if(currentState === 'erase'){//current state is erase.
-	  //Done with temp canvas, so clear it
-	  clearCanvas(tempCtx); //already doing this in drawInit
-	  clearCanvas(drawCtx);
-	  //very slow, but too many drawImage calls  causes blurry lines.
-	  drawCtx.putImageData(currentImg,0,0);
-	  drawStroke(drawCtx, xList, yList);
+	   //Done with temp canvas, so clear it
+	   clearCanvas(tempCtx); //already doing this in drawInit
+	   clearCanvas(drawCtx);
+	   //very slow, but too many drawImage calls  causes blurry lines.
+	   drawCtx.putImageData(currentImg,0,0);
+	   drawStroke(drawCtx, xList, yList);
 	}
 	else if(currentState === 'fill'){
 		//currentCtx.putImageData(colorLayerData, 0, 0);
@@ -450,10 +443,10 @@ function doMouseUp(event)
 function doPageLoad() {
 
 	$.mobile.loading( 'show', {
-				text: 'Loading',
-				textVisible: true,
-				theme: 'd'
-			});
+		text: 'Loading',
+		textVisible: true,
+		theme: 'd'
+	});
 			
 	var doc = document;
 	
@@ -547,12 +540,12 @@ function doPageLoad() {
 
 	$('#save-button').bind(
 		'vmousedown', function(event){
-				$.mobile.loading( 'show', {
-				text: 'Saving',
-				textVisible: true,
-				theme: 'b'
-				});
-			});
+			$.mobile.loading( 'show', {
+			text: 'Saving',
+			textVisible: true,
+			theme: 'b'
+		});
+	});
 		 
 	$('#save-button').bind('vmouseup', selectSave);
 
@@ -619,12 +612,14 @@ function hidePanel(event) {
 	//Slide control panel into view
 	$('#control-panel').animate(
 		{left:-(panelWidth+hidePanelButton.clientWidth+6) + "px"},
-		{duration:500,
-		 easing:'linear',
-		 complete: displayShowButton}
-		 );
+		{
+            duration:500,
+            easing:'linear',
+            complete: displayShowButton
+        }
+	);
 		
-		panelVisible = 0;
+	panelVisible = 0;
 }
 
 function displayShowButton() {
@@ -668,7 +663,7 @@ function selectSaveOk(event){
 
 function getCanvasBlob(){
 	
-	 //Use temp canvas to fill in a white background then copy current image on 
+	//Use temp canvas to fill in a white background then copy current image on 
 	//top of white background.  Need to do this because of the weird way that 
 	//the tablet displays .png files in the photos albums -- bb uses a black 
 	//background instead of white which is the default background of the canvas.
@@ -679,58 +674,55 @@ function getCanvasBlob(){
 	tempCtx.fillRect(0,0,canvasWidth,canvasHeight);		
 	tempCtx.drawImage(currentCanvas,0,0);
 	
-  var currentImgData = tempCanvas.toDataURL("file/png");
+    var currentImgData = tempCanvas.toDataURL("file/png");
   
-  //convert currentImg to blob data
-  currentImgData = currentImgData.replace('data:image/png;base64,', '');
+    //convert currentImg to blob data
+    currentImgData = currentImgData.replace('data:image/png;base64,', '');
   
-  var currentBlobData = blackberry.utils.stringToBlob(currentImgData, 'binary');
-  return currentBlobData;
-	
+    var currentBlobData = blackberry.utils.stringToBlob(currentImgData, 'binary');
+    return currentBlobData;	
 }
 
 
 function selectSave() {
 	
-  if ((window.blackberry === undefined) || (blackberry.io === undefined) || (blackberry.io.file === undefined)) {
-	  		$.mobile.loading('hide'); //hide activity indicator
-			alert("File not saved: functionality not supported on this device");
-			return false;
-		}
+    if ((window.blackberry === undefined) || (blackberry.io === undefined) || (blackberry.io.file === undefined)) {
+	  	$.mobile.loading('hide'); //hide activity indicator
+		alert("File not saved: functionality not supported on this device");
+		return false;
+	}
   
-  var canvasBlobData = getCanvasBlob();
+    var canvasBlobData = getCanvasBlob();
   
-  //Generate filename using date 
-  var d = new Date() ;
-  var dname = (d.getFullYear()*100 + d.getMonth()+1)*100 + d.getDate();
- 
- 
-	 var path = "file:///accounts/1000/shared/photos/DrawPix";
+    //Generate filename using date 
+    var d = new Date() ;
+    var dname = (d.getFullYear()*100 + d.getMonth()+1)*100 + d.getDate(); 
+	var path = "file:///accounts/1000/shared/photos/DrawPix";
   	
   
-   if (!blackberry.io.dir.exists(path)){
+    if (!blackberry.io.dir.exists(path)){
 	   blackberry.io.dir.createNewDir(path);
-   }
+    }
 
-  var filename = path + "/"+ dname +".png";
+    var filename = path + "/"+ dname +".png";
   
-  var ctr = 0;
-  while (blackberry.io.file.exists(filename)) {
+    var ctr = 0;
+    while (blackberry.io.file.exists(filename)) {
 		//then generate new filename
 		ctr ++;
 		var filename = path + "/"+ dname + "-" + ctr +".png";
-   }
+    }
    //Save blob daga image to file
    try {
    blackberry.io.file.saveFile(filename, canvasBlobData);
    } catch (e) {
-      alert('e.message in blackberry.io.file.saveFile= ' + e.message);
+        alert('e.message in blackberry.io.file.saveFile= ' + e.message);
 	 
    }
    
-  $.mobile.loading('hide'); //hide activity indicator
+    $.mobile.loading('hide'); //hide activity indicator
    
-   $( "#save-dialog" ).popup( "open" );
+    $( "#save-dialog" ).popup( "open" );
 }
 
 
@@ -796,11 +788,9 @@ function selectColor (){
 	
 }
 
-function selectUndo() {
-	
+function selectUndo() {	
 	//If undo list is empty, do nothing
-	if (undoList.empty()){
-		return;}
+	if (undoList.empty()){return;}
     
 	
 	redoList.addItem(currentCtx);
@@ -822,30 +812,30 @@ function selectMail() {
 				textVisible: false,
 				theme: 'b'
 				});
- if ((window.blackberry === undefined) || (blackberry.io === undefined) || (blackberry.io.file === undefined)) {
-	  		$.mobile.loading('hide'); //hide activity indicator
-			alert("functionality not supported on this device");
-			return false;
-		}
-	else{
-	//Generate the .png file to send
-	var Dir = blackberry.io.dir;
-	var path = Dir.appDirs.shared.photos.path;
-	
-	var drawFile = path + "/DrawPixIMG.png";
-	
-	if (blackberry.io.file.exists(drawFile)){
-		blackberry.io.file.deleteFile(drawFile);
+    if ((window.blackberry === undefined) || (blackberry.io === undefined) || (blackberry.io.file === undefined)) {
+	  	$.mobile.loading('hide'); //hide activity indicator
+		alert("functionality not supported on this device");
+		return false;
 	}
-	var canvasBlobData = getCanvasBlob();
+	else{
+        //Generate the .png file to send
+        var Dir = blackberry.io.dir;
+        var path = Dir.appDirs.shared.photos.path;
+	
+        var drawFile = path + "/DrawPixIMG.png";
+	
+        if (blackberry.io.file.exists(drawFile)){
+            blackberry.io.file.deleteFile(drawFile);
+	   }
+	   var canvasBlobData = getCanvasBlob();
 	
 	
-   //Save blob data image to file
-   try {
-   blackberry.io.file.saveFile(drawFile, canvasBlobData);
-   } catch (e) {
-      alert('e.message in blackberry.io.file.saveFile= ' + e.message);	 
-   }
+        //Save blob data image to file
+        try {
+            blackberry.io.file.saveFile(drawFile, canvasBlobData);
+        } catch (e) {
+            alert('e.message in blackberry.io.file.saveFile= ' + e.message);	 
+        }
 	}
 		
 	var email = "";
@@ -859,9 +849,7 @@ function selectMail() {
 	remote.addParam("appType", mailto_link);
 	remote.makeAsyncCall();
 
- 	$.mobile.loading('hide'); //hide activity indicator
-
-	
+ 	$.mobile.loading('hide'); //hide activity indicator	
 }
 
 

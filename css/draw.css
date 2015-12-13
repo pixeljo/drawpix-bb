@@ -148,16 +148,16 @@ a.show-hide{
 }
 
 .ui-slider {
-      width : 80% !important;
-	  margin-bottom: 5px !important;
+        width : 80% !important;
+        margin-bottom: 5px !important;
     }
 
     input.ui-slider-input {
-      display : none !important;
+        display : none !important;
   }
   
   .nav{
-	  list-style:none;
+	   list-style:none;
   }
   
 .color-section{
